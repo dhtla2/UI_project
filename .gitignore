@@ -49,3 +49,20 @@ Thumbs.db
 *.tmp
 *.temp
 *.bak
+
+# 테스트 파일
+test.txt
+*_test.txt
+test_*.py
+*_test.py
+
+# 검증/체크 스크립트
+check_*.py
+verify_*.py
+
+# 결과 파일
+*_result.txt
+*_check_result.txt
+
+# 임시 데이터
+filtered_*.csv
