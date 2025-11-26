@@ -1,0 +1,51 @@
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+env/
+
+# 환경 변수
+.env
+.env.local
+.env.*.local
+
+# 로그 파일
+*.log
+nohup.out
+backend.log
+
+# 빌드 결과물
+build/
+dist/
+.next/
+out/
+
+# 데이터베이스 (선택 - 용량 확인 후)
+# *.db
+
+# IDE 설정
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS 파일
+.DS_Store
+Thumbs.db
+.AppleDouble
+.LSOverride
+
+# 임시 파일
+*.tmp
+*.temp
+*.bak

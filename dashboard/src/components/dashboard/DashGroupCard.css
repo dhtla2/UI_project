@@ -1,0 +1,60 @@
+.dash-group-card {
+  background: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+  margin: 40px auto 40px auto;
+  max-width: 450px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.dash-group-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 120px 120px;
+  column-gap: 28px;
+  row-gap: 44px;
+  width: 100%;
+  align-items: stretch;
+}
+.dash34-row-cell {
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
+  height: 100%;
+}
+.dash03-large {
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
+  height: 100%;
+}
+.dash05 {
+  grid-column: 1 / 2;
+  grid-row: 2 / 3;
+  height: 100%;
+}
+.dash06 {
+  grid-column: 2 / 3;
+  grid-row: 2 / 3;
+  height: 100%;
+}
+.dash34-row-cell > .dash34-row {
+  height: 100%;
+}
+.dash03-large > .dash, .dash05 > .dash, .dash06 > .dash {
+  height: 100%;
+  width: 100%;
+  border-radius: 12px;
+  box-shadow: none;
+  margin: 0;
+  padding: 18px 10px;
+}
+.dash34-cell > .dash {
+  height: 100%;
+  width: 100%;
+  border-radius: 12px;
+  box-shadow: none;
+  margin: 0;
+  padding: 18px 10px;
+} 

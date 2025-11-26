@@ -1,0 +1,23 @@
+{
+  "database": {
+    "host": "localhost",
+    "port": 3307,
+    "user": "root",
+    "password": "Keti1234!",
+    "database": "port_database"
+  },
+  "api_server": {
+    "base_url": "http://localhost:8000",
+    "timeout": 30,
+    "retry_count": 3,
+    "retry_delay": 5
+  },
+  "sync": {
+    "batch_size": 1000,
+    "max_concurrent": 5,
+    "sync_timeout": 300,
+    "enable_logging": true,
+    "log_level": "INFO",
+    "log_file": "sync_service.log"
+  }
+}

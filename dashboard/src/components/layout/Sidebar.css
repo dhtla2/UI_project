@@ -1,0 +1,162 @@
+/* 사이드바 컨테이너 */
+.sidebar-container {
+  width: 280px;
+  background: rgba(227, 234, 242, 0.9);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+  border-radius: 0 100px 0 0;
+  z-index: 10;
+  backdrop-filter: blur(10px);
+}
+
+/* 곡선 로고 영역 */
+.logo-section {
+  background: rgba(227, 234, 242, 0.9);
+  padding: 40px 20px 30px 20px;
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.logo-section::after {
+  content: '';
+  position: absolute;
+  bottom: -20px;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: rgba(227, 234, 242, 0.9);
+  border-radius: 0 0 50% 50%;
+  z-index: 1;
+}
+
+.logo-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  z-index: 2;
+}
+
+.logo-icon {
+  width: 40px;
+  height: 40px;
+  background: #1e3a8a;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.logo-title {
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: #2d3a4b;
+  letter-spacing: 0.5px;
+}
+
+/* 메뉴 영역 */
+.menu-section {
+  flex: 1;
+  padding: 0 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.menu-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  color: #2d3a4b;
+  cursor: pointer;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  border-left: 4px solid transparent;
+}
+
+.menu-item:hover {
+  background: rgba(208, 224, 247, 0.8);
+  border-left: 4px solid #1e3a8a;
+  color: #1a2a3a;
+  transform: translateX(5px);
+}
+
+.menu-item.active {
+  background: #1e3a8a;
+  color: white;
+  border-left: 4px solid #1e3a8a;
+  box-shadow: 0 4px 15px rgba(30, 58, 138, 0.3);
+}
+
+.menu-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+/* 로그아웃 섹션 */
+.logout-section {
+  padding: 20px;
+  border-top: 1px solid rgba(191, 201, 217, 0.5);
+  margin-top: auto;
+}
+
+.logout-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  color: #2d3a4b;
+  background: transparent;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  border-left: 4px solid transparent;
+}
+
+.logout-button:hover {
+  background: rgba(208, 224, 247, 0.8);
+  border-left: 4px solid #dc2626;
+  color: #1a2a3a;
+  transform: translateX(5px);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .sidebar-container {
+    width: 240px;
+  }
+  
+  .logo-section {
+    padding: 30px 15px 20px 15px;
+  }
+  
+  .menu-section {
+    padding: 0 15px;
+  }
+  
+  .logout-section {
+    padding: 15px;
+  }
+} 

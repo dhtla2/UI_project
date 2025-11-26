@@ -1,0 +1,31 @@
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+.dash {
+  background: #fff;
+  border: 1.5px solid #bfc9d9;
+  border-radius: 10px;
+  min-height: 90px;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #3b7ddd;
+  font-weight: bold;
+  font-size: 1.05rem;
+  box-shadow: 0 2px 8px rgba(60,80,120,0.04);
+  text-align: center;
+  padding: 18px 10px;
+  margin-bottom: 0;
+}
+.dash12, .dash13, .dash14 {
+  min-height: 110px;
+  background: linear-gradient(90deg, #f7faff 60%, #e3eaf2 100%);
+  color: #222;
+  border-left: 5px solid #3b7ddd;
+  max-width: 350px;
+  width: 100%;
+} 
