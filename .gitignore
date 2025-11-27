@@ -66,3 +66,9 @@ verify_*.py
 
 # 임시 데이터
 filtered_*.csv
+
+# 샘플 데이터 (로컬 보관)
+filtered_ais_data.csv
+
+# 데이터베이스 (로컬 보관)
+ais_database.db
