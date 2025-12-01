@@ -25,6 +25,11 @@ from utils import (
 # Import database utilities
 from config import execute_query, execute_query_one
 
+# Import cache system
+from services.cache.cache_decorator import cached
+from services.cache.cache_keys import CacheNamespace, CacheEndpoint
+from config.redis_config import redis_settings
+
 router = APIRouter()
 
 @router.get("/tos-quality-details")
@@ -108,9 +113,19 @@ async def get_tos_quality_details():
             detail=f"TOS 품질 상세 데이터 조회 실패: {str(e)}"
         )
 
-@router.get("/tos-quality-summary", response_model=QualitySummaryData)
+@router.get("/tos-quality-summary")
+@cached(
+    namespace=CacheNamespace.TOS,
+    endpoint=CacheEndpoint.QUALITY_SUMMARY,
+    ttl=redis_settings.CACHE_TTL_LONG  # 1시간 캐싱
+)
 async def get_tos_quality_summary():
-    """TOS 품질 요약 데이터"""
+    """TOS 품질 요약 데이터 (캐싱 적용: 1시간)"""
+    # 디버그: 함수 진입 확인
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.info("🚨 [TOS] get_tos_quality_summary 함수 직접 실행됨!")
+    
     try:
         # 전체 품질 통계
         overall_stats = execute_query_one("""
@@ -157,24 +172,28 @@ async def get_tos_quality_summary():
         if validity_stats and validity_stats[0] > 0:
             validity_rate = calculate_pass_rate(validity_stats[1], validity_stats[0])
         
-        return QualitySummaryData(
-            total_inspections=total_inspections,
-            total_checks=total_checks,
-            pass_count=pass_count,
-            fail_count=fail_count,
-            pass_rate=pass_rate,
-            last_inspection_date=last_inspection.strftime('%Y-%m-%d') if last_inspection else None,
-            completeness={
-                "rate": completeness_rate,
-                "total": completeness_stats[0] if completeness_stats else 0,
-                "passed": completeness_stats[1] if completeness_stats else 0
+        quality_data = {
+            "total_inspections": total_inspections,
+            "total_checks": total_checks,
+            "pass_count": pass_count,
+            "fail_count": fail_count,
+            "pass_rate": pass_rate,
+            "last_inspection_date": last_inspection.strftime('%Y-%m-%d') if last_inspection else None,
+            "completeness": {
+                "fields_checked": completeness_stats[0] if completeness_stats else 0,
+                "pass_count": completeness_stats[1] if completeness_stats else 0,
+                "fail_count": (completeness_stats[0] - completeness_stats[1]) if completeness_stats and completeness_stats[0] else 0,
+                "pass_rate": completeness_rate
             },
-            validity={
-                "rate": validity_rate,
-                "total": validity_stats[0] if validity_stats else 0,
-                "passed": validity_stats[1] if validity_stats else 0
+            "validity": {
+                "fields_checked": validity_stats[0] if validity_stats else 0,
+                "pass_count": validity_stats[1] if validity_stats else 0,
+                "fail_count": (validity_stats[0] - validity_stats[1]) if validity_stats and validity_stats[0] else 0,
+                "pass_rate": validity_rate
             }
-        )
+        }
+        
+        return create_response_data([quality_data])
         
     except Exception as e:
         raise HTTPException(
