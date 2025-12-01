@@ -32,6 +32,11 @@ from config import execute_query, execute_query_one
 # Import services
 from services import ais_service
 
+# Import Redis cache system
+from services.cache.cache_decorator import cached
+from services.cache.cache_keys import CacheNamespace, CacheEndpoint
+from config.redis_config import redis_settings
+
 router = APIRouter()
 
 @router.get("/all", response_model=List[AISInfoResponse])
@@ -148,12 +153,12 @@ async def get_latest_data():
 async def get_statistics():
     """통계 데이터 조회"""
     try:
-        # SQLite에서 통계 조회 - 파라미터 없이 직접 실행
-        total_ships_result = ais_service.db_service.execute_ais_query("SELECT COUNT(*) FROM ais_info")
-        total_ships = total_ships_result[0][0] if total_ships_result else 0
+        # MySQL에서 통계 조회
+        total_ships_result = execute_query_one("SELECT COUNT(*) FROM ais_info")
+        total_ships = total_ships_result[0] if total_ships_result else 0
         
         # 선박 타입별 분포
-        ship_types_result = ais_service.db_service.execute_ais_query("""
+        ship_types_result = execute_query("""
             SELECT vsslTp, COUNT(*) as count 
             FROM ais_info 
             WHERE vsslTp IS NOT NULL 
@@ -164,7 +169,7 @@ async def get_statistics():
         ship_types = [{"name": row[0], "count": row[1]} for row in ship_types_result] if ship_types_result else []
         
         # 국적별 분포
-        flags_result = ais_service.db_service.execute_ais_query("""
+        flags_result = execute_query("""
             SELECT flag, COUNT(*) as count 
             FROM ais_info 
             WHERE flag IS NOT NULL 
@@ -175,7 +180,7 @@ async def get_statistics():
         flags = [{"name": row[0], "count": row[1]} for row in flags_result] if flags_result else []
         
         # 항해 상태별 분포
-        nav_status_result = ais_service.db_service.execute_ais_query("""
+        nav_status_result = execute_query("""
             SELECT vsslNavi, COUNT(*) as count 
             FROM ais_info 
             WHERE vsslNavi IS NOT NULL 
@@ -206,8 +211,13 @@ async def get_ais_summary_legacy():
     return await get_ais_summary()
 
 @router.get("/summary")
+@cached(
+    namespace=CacheNamespace.AIS,
+    endpoint=CacheEndpoint.SUMMARY,
+    ttl=redis_settings.CACHE_TTL_LONG  # 1시간 캐싱
+)
 async def get_ais_summary():
-    """AIS 데이터 요약 조회"""
+    """AIS 데이터 요약 조회 (캐싱 적용: 1시간)"""
     try:
         # AIS 기본 통계
         stats = await get_statistics()
@@ -332,14 +342,16 @@ async def get_ais_quality_status():
             "pass_rate": pass_rate,
             "last_inspection_date": last_inspection.strftime('%Y-%m-%d') if last_inspection else None,
             "completeness": {
-                "rate": completeness_rate,
-                "total": completeness_stats[0] if completeness_stats else 0,
-                "passed": completeness_stats[1] if completeness_stats else 0
+                "fields_checked": completeness_stats[0] if completeness_stats else 0,
+                "pass_count": completeness_stats[1] if completeness_stats else 0,
+                "fail_count": (completeness_stats[0] - completeness_stats[1]) if completeness_stats and completeness_stats[0] else 0,
+                "pass_rate": completeness_rate
             },
             "validity": {
-                "rate": validity_rate,
-                "total": validity_stats[0] if validity_stats else 0,
-                "passed": validity_stats[1] if validity_stats else 0
+                "fields_checked": validity_stats[0] if validity_stats else 0,
+                "pass_count": validity_stats[1] if validity_stats else 0,
+                "fail_count": (validity_stats[0] - validity_stats[1]) if validity_stats and validity_stats[0] else 0,
+                "pass_rate": validity_rate
             }
         }
         
@@ -351,29 +363,15 @@ async def get_ais_quality_status():
             detail=f"AIS 품질 상태 조회 실패: {str(e)}"
         )
 
-@router.get("/quality-summary", response_model=QualitySummaryData)
+@router.get("/quality-summary")
+@cached(
+    namespace=CacheNamespace.AIS,
+    endpoint=CacheEndpoint.QUALITY_SUMMARY,
+    ttl=redis_settings.CACHE_TTL_LONG  # 1시간 캐싱
+)
 async def get_ais_quality_summary():
-    """AIS 데이터 품질 요약 정보"""
-    try:
-        quality_status = await get_ais_quality_status()
-        data = quality_status["data"][0]
-        
-        return QualitySummaryData(
-            total_inspections=data["total_inspections"],
-            total_checks=data["total_checks"],
-            pass_count=data["pass_count"],
-            fail_count=data["fail_count"],
-            pass_rate=data["pass_rate"],
-            last_inspection_date=data["last_inspection_date"],
-            completeness=data["completeness"],
-            validity=data["validity"]
-        )
-        
-    except Exception as e:
-        raise HTTPException(
-            status_code=500, 
-            detail=f"AIS 품질 요약 조회 실패: {str(e)}"
-        )
+    """AIS 데이터 품질 요약 정보 (캐싱 적용: 1시간)"""
+    return await get_ais_quality_status()
 
 @router.get("/quality-details")
 async def get_ais_quality_details():
@@ -461,17 +459,17 @@ async def get_ais_charts():
     """AIS 차트 데이터"""
     try:
         # 선박 타입별 차트 데이터
-        ship_type_chart = ais_service.db_service.execute_ais_query("""
-            SELECT vssl_tp, COUNT(*) as count 
+        ship_type_chart = execute_query("""
+            SELECT vsslTp, COUNT(*) as count 
             FROM ais_info 
-            WHERE vssl_tp IS NOT NULL 
-            GROUP BY vssl_tp 
+            WHERE vsslTp IS NOT NULL 
+            GROUP BY vsslTp 
             ORDER BY count DESC 
             LIMIT 10
         """)
         
         # 국적별 차트 데이터
-        flag_chart = ais_service.db_service.execute_ais_query("""
+        flag_chart = execute_query("""
             SELECT flag, COUNT(*) as count 
             FROM ais_info 
             WHERE flag IS NOT NULL 
@@ -481,7 +479,7 @@ async def get_ais_charts():
         """)
         
         # 속도 분포 차트 데이터
-        speed_chart = ais_service.db_service.execute_ais_query("""
+        speed_chart = execute_query("""
             SELECT 
                 CASE 
                     WHEN sog < 5 THEN '0-5 knots'

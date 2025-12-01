@@ -25,11 +25,26 @@ from utils import (
 # Import database utilities
 from config import execute_query, execute_query_one
 
+# Import cache system
+from services.cache.cache_decorator import cached
+from services.cache.cache_keys import CacheNamespace, CacheEndpoint
+from config.redis_config import redis_settings
+
 router = APIRouter()
 
-@router.get("/tc-quality-summary", response_model=QualitySummaryData)
+@router.get("/tc-quality-summary")
+@cached(
+    namespace=CacheNamespace.TC,
+    endpoint=CacheEndpoint.QUALITY_SUMMARY,
+    ttl=redis_settings.CACHE_TTL_LONG  # 1시간 캐싱
+)
 async def get_tc_quality_summary():
-    """TC 품질 요약 데이터"""
+    """TC 품질 요약 데이터 (캐싱 적용: 1시간)"""
+    # 디버그: 함수 진입 확인
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.info("🚨 [TC] get_tc_quality_summary 함수 직접 실행됨!")
+    
     try:
         # 전체 품질 통계
         overall_stats = execute_query_one("""
@@ -82,24 +97,28 @@ async def get_tc_quality_summary():
             validity_passed = validity_stats[1]
             validity_rate = calculate_pass_rate(validity_passed, validity_total)
         
-        return QualitySummaryData(
-            total_inspections=int(total_inspections),
-            total_checks=int(total_checks),
-            pass_count=int(pass_count),
-            fail_count=int(fail_count),
-            pass_rate=float(pass_rate),
-            last_inspection_date=last_inspection.strftime('%Y-%m-%d') if last_inspection else get_current_timestamp(),
-            completeness={
-                "rate": float(completeness_rate),
-                "total": int(completeness_total),
-                "passed": int(completeness_passed)
+        quality_data = {
+            "total_inspections": int(total_inspections),
+            "total_checks": int(total_checks),
+            "pass_count": int(pass_count),
+            "fail_count": int(fail_count),
+            "pass_rate": float(pass_rate),
+            "last_inspection_date": last_inspection.strftime('%Y-%m-%d') if last_inspection else get_current_timestamp(),
+            "completeness": {
+                "fields_checked": int(completeness_total),
+                "pass_count": int(completeness_passed),
+                "fail_count": int(completeness_total - completeness_passed) if completeness_total else 0,
+                "pass_rate": float(completeness_rate)
             },
-            validity={
-                "rate": float(validity_rate),
-                "total": int(validity_total),
-                "passed": int(validity_passed)
+            "validity": {
+                "fields_checked": int(validity_total),
+                "pass_count": int(validity_passed),
+                "fail_count": int(validity_total - validity_passed) if validity_total else 0,
+                "pass_rate": float(validity_rate)
             }
-        )
+        }
+        
+        return create_response_data([quality_data])
         
     except Exception as e:
         raise HTTPException(

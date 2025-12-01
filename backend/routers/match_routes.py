@@ -28,13 +28,23 @@ from utils import (
 # Import database utilities
 from config import execute_query, execute_query_one
 
+# Import cache system
+from services.cache.cache_decorator import cached
+from services.cache.cache_keys import CacheNamespace, CacheEndpoint
+from config.redis_config import redis_settings
+
 router = APIRouter()
 
 # ==================== PortMisVsslNo (PMIS→TOS 매칭) APIs ====================
 
 @router.get("/port-vssl/summary")
+@cached(
+    namespace="port_vssl",
+    endpoint=CacheEndpoint.SUMMARY,
+    ttl=redis_settings.CACHE_TTL_LONG  # 1시간 캐싱
+)
 async def get_port_vssl_summary():
-    """항만 선박번호 매칭 요약 조회 (PMIS→TOS)"""
+    """항만 선박번호 매칭 요약 조회 (PMIS→TOS) (캐싱 적용: 1시간)"""
     try:
         # 기본 통계
         stats_result = execute_query_one("""
@@ -427,8 +437,13 @@ async def get_port_vssl_quality_status():
 # ==================== TosVsslNo (TOS→PMIS 매칭) APIs ====================
 
 @router.get("/tos-vssl/summary")
+@cached(
+    namespace="tos_vssl",
+    endpoint=CacheEndpoint.SUMMARY,
+    ttl=redis_settings.CACHE_TTL_LONG  # 1시간 캐싱
+)
 async def get_tos_vssl_summary():
-    """TOS 선박번호 매칭 요약 조회 (TOS→PMIS)"""
+    """TOS 선박번호 매칭 요약 조회 (TOS→PMIS) (캐싱 적용: 1시간)"""
     try:
         # 기본 통계
         stats_result = execute_query_one("""

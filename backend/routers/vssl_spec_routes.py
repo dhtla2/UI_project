@@ -23,11 +23,21 @@ from utils import (
 # Import database utilities
 from config import execute_query, execute_query_one
 
+# Import cache system
+from services.cache.cache_decorator import cached
+from services.cache.cache_keys import CacheNamespace, CacheEndpoint
+from config.redis_config import redis_settings
+
 router = APIRouter()
 
 @router.get("/vssl-spec/summary")
+@cached(
+    namespace=CacheNamespace.VSSL_SPEC,
+    endpoint=CacheEndpoint.SUMMARY,
+    ttl=redis_settings.CACHE_TTL_LONG  # 1시간 캐싱
+)
 async def get_vssl_spec_summary():
-    """VsslSpecInfo 품질 요약 데이터"""
+    """VsslSpecInfo 품질 요약 데이터 (캐싱 적용: 1시간)"""
     try:
         # 전체 검사 통계
         total_stats = execute_query_one("""
