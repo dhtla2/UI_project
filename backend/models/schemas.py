@@ -13,7 +13,7 @@ class AISInfoResponse(BaseModel):
     callLetter: Optional[str] = None
     vsslTp: Optional[str] = None
     vsslTpCd: Optional[int] = None
-    vsslTpCrgo: Optional[float] = None
+    vsslTpCrgo: Optional[str] = None
     vsslCls: Optional[str] = None
     vsslLen: Optional[float] = None
     vsslWidth: Optional[float] = None
@@ -32,7 +32,7 @@ class AISInfoResponse(BaseModel):
     dt_pos_utc: Optional[int] = None
     dt_static_utc: Optional[int] = None
     vsslTpMain: Optional[str] = None
-    vsslTpSub: Optional[float] = None
+    vsslTpSub: Optional[str] = None
     dstNm: Optional[str] = None
     dstCd: Optional[str] = None
     eta: Optional[int] = None
@@ -260,5 +260,27 @@ class QCWorkHistoryData(BaseModel):
     total_work: int
     terminals: int
     ships: int
+    containers: int
+
+class YTSummaryData(BaseModel):
+    """YT 요약 데이터 모델"""
+    total_work: int
+    total_terminals: int
+    total_vehicles: int
+    total_containers: int
+    work_days: int
+    recent_work: int
+    active_terminals: int
+    active_vehicles: int
+    work_types: List[Dict[str, Any]]
+    terminals: List[Dict[str, Any]]
+    last_inspection_date: Optional[str] = None
+
+class YTWorkHistoryData(BaseModel):
+    """YT 작업 히스토리 모델"""
+    work_date: str
+    total_work: int
+    terminals: int
+    vehicles: int
     containers: int
 

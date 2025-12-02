@@ -6,10 +6,12 @@ from . import (
     tos_routes,
     tc_routes,
     qc_routes,
+    yt_routes,
     dashboard_routes,
     ui_routes,
     match_routes,
-    vssl_spec_routes
+    vssl_spec_routes,
+    cache_routes
 )
 
 __all__ = [
@@ -18,8 +20,10 @@ __all__ = [
     "tos_routes",
     "tc_routes",
     "qc_routes",
+    "yt_routes",
     "dashboard_routes",
     "ui_routes",
     "match_routes",
-    "vssl_spec_routes"
+    "vssl_spec_routes",
+    "cache_routes"
 ]

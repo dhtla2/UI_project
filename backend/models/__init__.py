@@ -41,6 +41,10 @@ from .schemas import (
     # QC 관련 모델들
     QCSummaryData,
     QCWorkHistoryData,
+    
+    # YT 관련 모델들
+    YTSummaryData,
+    YTWorkHistoryData,
 )
 
 __all__ = [
@@ -84,4 +88,8 @@ __all__ = [
     # QC 관련
     "QCSummaryData",
     "QCWorkHistoryData",
+    
+    # YT 관련
+    "YTSummaryData",
+    "YTWorkHistoryData",
 ]

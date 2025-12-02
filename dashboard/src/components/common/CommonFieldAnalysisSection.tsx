@@ -5,6 +5,7 @@ import {
   fetchTOSFieldAnalysis, 
   fetchTCFieldAnalysis, 
   fetchQCFieldAnalysis,
+  fetchYTFieldAnalysis,
   fetchPortVsslFieldAnalysis,
   fetchTosVsslFieldAnalysis,
   fetchVsslSpecFieldAnalysis,
@@ -25,7 +26,7 @@ interface FieldAnalysisData {
 }
 
 interface CommonFieldAnalysisSectionProps {
-  currentPage: 'AIS' | 'TOS' | 'TC' | 'QC' | 'PortMisVsslNo' | 'TosVsslNo' | 'VsslSpecInfo' | 'QualityCheck';
+  currentPage: 'AIS' | 'TOS' | 'TC' | 'QC' | 'YT' | 'PortMisVsslNo' | 'TosVsslNo' | 'VsslSpecInfo' | 'QualityCheck';
   loading: boolean;
   error: string | null;
 }
@@ -118,6 +119,9 @@ const CommonFieldAnalysisSection: React.FC<CommonFieldAnalysisSectionProps> = ({
             break;
           case 'QC':
             apiData = await fetchQCFieldAnalysis();
+            break;
+          case 'YT':
+            apiData = await fetchYTFieldAnalysis();
             break;
           case 'PortMisVsslNo':
             apiData = await fetchPortVsslFieldAnalysis();
