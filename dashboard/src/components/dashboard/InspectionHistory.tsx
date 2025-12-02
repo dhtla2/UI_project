@@ -35,7 +35,7 @@ interface InspectionRecord {
 
 interface InspectionHistoryProps {
   history: InspectionRecord[];
-  currentPage: 'AIS' | 'TOS' | 'TC' | 'QC' | 'PortMisVsslNo' | 'TosVsslNo' | 'VsslSpecInfo' | 'QualityCheck';
+  currentPage: 'AIS' | 'TOS' | 'TC' | 'QC' | 'YT' | 'PortMisVsslNo' | 'TosVsslNo' | 'VsslSpecInfo' | 'QualityCheck';
   onPeriodChange?: (period: 'daily' | 'weekly' | 'monthly' | 'custom', startDate?: string, endDate?: string) => void;
 }
 

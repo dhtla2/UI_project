@@ -11,6 +11,7 @@ import {
   fetchTOSQualitySummary,
   fetchTCQualitySummary,
   fetchQCQualitySummary,
+  fetchYTQualitySummary,
   fetchPortVsslSummary,
   fetchTosVsslSummary,
   fetchVsslSpecSummary,
@@ -18,6 +19,7 @@ import {
   fetchTOSFieldAnalysis,
   fetchTCFieldAnalysis,
   fetchQCFieldAnalysis,
+  fetchYTFieldAnalysis,
   fetchPortVsslFieldAnalysis,
   fetchTosVsslFieldAnalysis,
   fetchVsslSpecFieldAnalysis
@@ -27,7 +29,7 @@ import {
 type QualitySummaryData = AISQualitySummary | TOSQualitySummaryData | TCQualitySummaryData | QCQualitySummaryData | any;
 
 interface UnifiedDataQualityProps {
-  pageType: 'AIS' | 'TOS' | 'TC' | 'QC' | 'PortMisVsslNo' | 'TosVsslNo' | 'VsslSpecInfo';
+  pageType: 'AIS' | 'TOS' | 'TC' | 'QC' | 'YT' | 'PortMisVsslNo' | 'TosVsslNo' | 'VsslSpecInfo' | 'QualityCheck';
   data?: QualitySummaryData | null;
   onDataLoad?: (data: QualitySummaryData) => void;
 }
@@ -170,6 +172,7 @@ const UnifiedDataQuality: React.FC<UnifiedDataQualityProps> = ({
       case 'TOS': return fetchTOSQualitySummary;
       case 'TC': return fetchTCQualitySummary;
       case 'QC': return fetchQCQualitySummary;
+      case 'YT': return fetchYTQualitySummary;
       case 'PortMisVsslNo': return fetchPortVsslSummary;
       case 'TosVsslNo': return fetchTosVsslSummary;
       case 'VsslSpecInfo': return fetchVsslSpecSummary;
@@ -184,6 +187,7 @@ const UnifiedDataQuality: React.FC<UnifiedDataQualityProps> = ({
       case 'TOS': return fetchTOSFieldAnalysis;
       case 'TC': return fetchTCFieldAnalysis;
       case 'QC': return fetchQCFieldAnalysis;
+      case 'YT': return fetchYTFieldAnalysis;
       case 'PortMisVsslNo': return fetchPortVsslFieldAnalysis;
       case 'TosVsslNo': return fetchTosVsslFieldAnalysis;
       case 'VsslSpecInfo': return fetchVsslSpecFieldAnalysis;
@@ -198,6 +202,7 @@ const UnifiedDataQuality: React.FC<UnifiedDataQualityProps> = ({
       case 'TOS': return 'TOS 데이터 품질 요약';
       case 'TC': return 'TC 데이터 품질 요약';
       case 'QC': return 'QC 데이터 품질 요약';
+      case 'YT': return 'YT 데이터 품질 요약';
       case 'PortMisVsslNo': return 'PMIS→TOS 데이터 품질 요약';
       case 'TosVsslNo': return 'TOS→PMIS 데이터 품질 요약';
       case 'VsslSpecInfo': return '선박제원 데이터 품질 요약';
@@ -412,7 +417,7 @@ const UnifiedDataQuality: React.FC<UnifiedDataQualityProps> = ({
           {/* 통과율 */}
           <div className="bg-white p-3 rounded-lg shadow text-center">
             <div className="text-xl font-bold text-green-600">
-              {qualityData?.pass_rate?.toFixed(1) || 0}%
+              {Number(qualityData?.pass_rate || 0).toFixed(1)}%
             </div>
             <div className="text-sm text-gray-600 flex items-center justify-center gap-1">
               통과율

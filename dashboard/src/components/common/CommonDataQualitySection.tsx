@@ -38,7 +38,7 @@ interface VsslSpecData {
 }
 
 interface CommonDataQualitySectionProps {
-  currentPage: 'AIS' | 'TOS' | 'TC' | 'QC' | 'PortMisVsslNo' | 'TosVsslNo' | 'VsslSpecInfo';
+  currentPage: 'AIS' | 'TOS' | 'TC' | 'QC' | 'YT' | 'PortMisVsslNo' | 'TosVsslNo' | 'VsslSpecInfo' | 'QualityCheck';
   loading: boolean;
   error: string | null;
   apiQualityData: APIQualityData[];
@@ -48,6 +48,7 @@ interface CommonDataQualitySectionProps {
   tosData?: TOSData;
   tcData?: TCData;
   qcData?: QCData;
+  ytData?: any;
   matchData?: MatchData;
   vsslSpecData?: VsslSpecData;
 }
@@ -61,6 +62,7 @@ const CommonDataQualitySection: React.FC<CommonDataQualitySectionProps> = ({
   tosData,
   tcData,
   qcData,
+  ytData,
   matchData,
   vsslSpecData
 }) => {
@@ -74,6 +76,8 @@ const CommonDataQualitySection: React.FC<CommonDataQualitySectionProps> = ({
         return <UnifiedDataQuality pageType="TC" data={tcData?.tcQualitySummary} />;
       case 'QC':
         return <UnifiedDataQuality pageType="QC" data={qcData?.qcQualitySummary} />;
+      case 'YT':
+        return <UnifiedDataQuality pageType="YT" data={ytData?.ytQualitySummary} />;
       case 'PortMisVsslNo':
         return <UnifiedDataQuality pageType="PortMisVsslNo" data={matchData?.matchQualitySummary} />;
       case 'TosVsslNo':

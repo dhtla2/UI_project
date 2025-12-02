@@ -14,7 +14,7 @@ interface InspectionRecord {
 }
 
 interface CommonMiddleSectionProps {
-  currentPage: 'AIS' | 'TOS' | 'TC' | 'QC' | 'PortMisVsslNo' | 'TosVsslNo' | 'VsslSpecInfo' | 'QualityCheck';
+  currentPage: 'AIS' | 'TOS' | 'TC' | 'QC' | 'YT' | 'PortMisVsslNo' | 'TosVsslNo' | 'VsslSpecInfo' | 'QualityCheck';
   inspectionHistory: InspectionRecord[];
   loading?: boolean;
   error?: string | null;

@@ -7,6 +7,7 @@ const INSPECTION_CONFIG = {
   'TOS': ['completeness', 'validity'], 
   'TC': ['completeness', 'validity', 'usage'],
   'QC': ['completeness', 'validity'],
+  'YT': ['completeness', 'validity'],
   'PortMisVsslNo': ['completeness', 'validity'],
   'TosVsslNo': ['completeness', 'validity'],
   'VsslSpecInfo': ['completeness', 'validity'],
@@ -78,7 +79,7 @@ interface InspectionData {
 }
 
 interface InspectionResultsSectionProps {
-  currentPage: 'AIS' | 'TOS' | 'TC' | 'QC' | 'PortMisVsslNo' | 'TosVsslNo' | 'VsslSpecInfo' | 'QualityCheck';
+  currentPage: 'AIS' | 'TOS' | 'TC' | 'QC' | 'YT' | 'PortMisVsslNo' | 'TosVsslNo' | 'VsslSpecInfo' | 'QualityCheck';
   data: Record<string, InspectionData>;
   loading?: boolean;
   error?: string | null;

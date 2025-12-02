@@ -52,7 +52,7 @@ interface VsslSpecData {
 }
 
 interface CommonTopSectionProps {
-  currentPage: 'AIS' | 'TOS' | 'TC' | 'QC' | 'PortMisVsslNo' | 'TosVsslNo' | 'VsslSpecInfo' | 'QualityCheck';
+  currentPage: 'AIS' | 'TOS' | 'TC' | 'QC' | 'YT' | 'PortMisVsslNo' | 'TosVsslNo' | 'VsslSpecInfo' | 'QualityCheck';
   loading: boolean;
   error: string | null;
   apiQualityData: APIQualityData[];
@@ -62,6 +62,7 @@ interface CommonTopSectionProps {
   tosData?: TOSData;
   tcData?: TCData;
   qcData?: QCData;
+  ytData?: any;
   matchData?: MatchData;
   vsslSpecData?: VsslSpecData;
 }
@@ -75,6 +76,7 @@ const CommonTopSection: React.FC<CommonTopSectionProps> = ({
   tosData,
   tcData,
   qcData,
+  ytData,
   matchData,
   vsslSpecData
 }) => {
@@ -85,7 +87,7 @@ const CommonTopSection: React.FC<CommonTopSectionProps> = ({
 
   return (
     <CommonDataQualitySection
-      currentPage={currentPage as 'AIS' | 'TOS' | 'TC' | 'QC' | 'PortMisVsslNo' | 'TosVsslNo' | 'VsslSpecInfo'}
+      currentPage={currentPage as 'AIS' | 'TOS' | 'TC' | 'QC' | 'YT' | 'PortMisVsslNo' | 'TosVsslNo' | 'VsslSpecInfo' | 'QualityCheck'}
       loading={loading}
       error={error}
       apiQualityData={apiQualityData}
@@ -93,6 +95,7 @@ const CommonTopSection: React.FC<CommonTopSectionProps> = ({
       tosData={tosData}
       tcData={tcData}
       qcData={qcData}
+      ytData={ytData}
       matchData={matchData}
       vsslSpecData={vsslSpecData}
     />

@@ -220,8 +220,8 @@ export const fetchAISQualitySummary = async (): Promise<AISQualitySummary> => {
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    const data: AISQualitySummary = await response.json();
-    return data;
+    const result = await response.json();
+    return result.data[0];
   } catch (error) {
     console.error("Error fetching AIS quality summary:", error);
     throw error;
@@ -345,6 +345,27 @@ export interface QCQualitySummaryData {
   };
 }
 
+export interface YTQualitySummaryData {
+  total_inspections: number;
+  total_checks: number;
+  pass_count: number;
+  fail_count: number;
+  pass_rate: number;
+  last_inspection_date: string | null;
+  completeness: {
+    fields_checked: number;
+    pass_count: number;
+    fail_count: number;
+    pass_rate: number;
+  };
+  validity: {
+    fields_checked: number;
+    pass_count: number;
+    fail_count: number;
+    pass_rate: number;
+  };
+}
+
 // TOS 품질 요약 데이터 조회
 export const fetchTOSQualitySummary = async (): Promise<TOSQualitySummaryData> => {
   try {
@@ -352,8 +373,8 @@ export const fetchTOSQualitySummary = async (): Promise<TOSQualitySummaryData> =
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    const data: TOSQualitySummaryData = await response.json();
-    return data;
+    const result = await response.json();
+    return result.data[0];
   } catch (error) {
     console.error("Error fetching TOS quality summary:", error);
     throw error;
@@ -367,8 +388,8 @@ export const fetchTCQualitySummary = async (): Promise<TCQualitySummaryData> => 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    const data: TCQualitySummaryData = await response.json();
-    return data;
+    const result = await response.json();
+    return result.data[0];
   } catch (error) {
     console.error("Error fetching TC quality summary:", error);
     throw error;
@@ -382,10 +403,25 @@ export const fetchQCQualitySummary = async (): Promise<QCQualitySummaryData> => 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    const data: QCQualitySummaryData = await response.json();
-    return data;
+    const result = await response.json();
+    return result.data[0];
   } catch (error) {
     console.error("Error fetching QC quality summary:", error);
+    throw error;
+  }
+};
+
+// YT 품질 요약 데이터 조회
+export const fetchYTQualitySummary = async (): Promise<YTQualitySummaryData> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/dashboard/yt-quality-summary`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const result = await response.json();
+    return result.data[0];
+  } catch (error) {
+    console.error("Error fetching YT quality summary:", error);
     throw error;
   }
 };
@@ -741,6 +777,42 @@ export const fetchQCInspectionHistory = async (
   }
 };
 
+// YT 검사 히스토리 데이터 타입
+export interface YTInspectionHistoryData {
+  date: string;
+  score: number;
+  totalChecks: number;
+  passedChecks: number;
+  failedChecks: number;
+  completenessRate: number;
+  validityRate: number;
+}
+
+// YT 검사 히스토리 데이터 조회 (기간별 필터링 지원)
+export const fetchYTInspectionHistory = async (
+  period: 'daily' | 'weekly' | 'monthly' | 'custom' = 'daily',
+  startDate?: string,
+  endDate?: string
+): Promise<YTInspectionHistoryData[]> => {
+  try {
+    let url = `${API_BASE_URL}/api/dashboard/yt-inspection-history?period=${period}`;
+    
+    if (period === 'custom' && startDate && endDate) {
+      url += `&start_date=${startDate}&end_date=${endDate}`;
+    }
+    
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data: YTInspectionHistoryData[] = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching YT inspection history:", error);
+    throw error;
+  }
+};
+
 // 데이터 품질 상태 타입
 export interface DataQualityStatusData {
   completeness: {
@@ -974,6 +1046,23 @@ export const fetchQCFieldAnalysis = async (): Promise<FieldAnalysisData> => {
     return result.data?.[0] || { field_statistics: [], severity_distribution: [] };
   } catch (error) {
     console.error('QC 필드 분석 데이터 조회 실패:', error);
+    throw error;
+  }
+};
+
+// YT 필드별 분석 데이터 조회
+export const fetchYTFieldAnalysis = async (): Promise<FieldAnalysisData> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/dashboard/yt-field-analysis`);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const result = await response.json();
+    return result.data?.[0] || { field_statistics: [], severity_distribution: [] };
+  } catch (error) {
+    console.error('YT 필드 분석 데이터 조회 실패:', error);
     throw error;
   }
 };

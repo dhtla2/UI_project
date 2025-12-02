@@ -2,8 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import UserProfileWidget from './UserProfileWidget';
 
 interface TopTabsProps {
-  currentPage: 'AIS' | 'TOS' | 'TC' | 'QC' | 'PortMisVsslNo' | 'TosVsslNo' | 'VsslSpecInfo' | 'QualityCheck';
-  onPageChange: (page: 'AIS' | 'TOS' | 'TC' | 'QC' | 'PortMisVsslNo' | 'TosVsslNo' | 'VsslSpecInfo' | 'QualityCheck') => void;
+  currentPage: 'AIS' | 'TOS' | 'TC' | 'QC' | 'YT' | 'PortMisVsslNo' | 'TosVsslNo' | 'VsslSpecInfo' | 'QualityCheck';
+  onPageChange: (page: 'AIS' | 'TOS' | 'TC' | 'QC' | 'YT' | 'PortMisVsslNo' | 'TosVsslNo' | 'VsslSpecInfo' | 'QualityCheck') => void;
 }
 
 const TopTabs: React.FC<TopTabsProps> = ({ currentPage, onPageChange }) => {
@@ -15,6 +15,7 @@ const TopTabs: React.FC<TopTabsProps> = ({ currentPage, onPageChange }) => {
     { key: 'TOS' as const, label: 'TOS' },
     { key: 'TC' as const, label: 'TC' },
     { key: 'QC' as const, label: 'QC' },
+    { key: 'YT' as const, label: 'YT' },
     { key: 'PortMisVsslNo' as const, label: 'PMIS→TOS' },
     { key: 'TosVsslNo' as const, label: 'TOS→PMIS' },
     { key: 'VsslSpecInfo' as const, label: '선박제원' }
@@ -36,7 +37,7 @@ const TopTabs: React.FC<TopTabsProps> = ({ currentPage, onPageChange }) => {
     };
   }, []);
 
-  const handlePageChange = (page: 'AIS' | 'TOS' | 'TC' | 'QC' | 'PortMisVsslNo' | 'TosVsslNo' | 'VsslSpecInfo') => {
+  const handlePageChange = (page: 'AIS' | 'TOS' | 'TC' | 'QC' | 'YT' | 'PortMisVsslNo' | 'TosVsslNo' | 'VsslSpecInfo') => {
     onPageChange(page);
     setIsOpen(false);
   };

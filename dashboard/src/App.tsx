@@ -7,6 +7,7 @@ import AISPage from './components/AISPage';
 import TOSPage from './components/TOSPage';
 import TCPage from './components/TCPage';
 import QCPage from './components/QCPage';
+import YTPage from './components/YTPage';
 import PortMisVsslNoPage from './components/PortMisVsslNoPage';
 import TosVsslNoPage from './components/TosVsslNoPage';
 import VsslSpecInfoPage from './components/VsslSpecInfoPage';
@@ -60,7 +61,7 @@ const generateSessionId = () => {
 
 // 대시보드 컴포넌트 (인증된 사용자용)
 const Dashboard: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState<'AIS' | 'TOS' | 'TC' | 'QC' | 'PortMisVsslNo' | 'TosVsslNo' | 'VsslSpecInfo' | 'QualityCheck'>('AIS');
+  const [currentPage, setCurrentPage] = useState<'AIS' | 'TOS' | 'TC' | 'QC' | 'YT' | 'PortMisVsslNo' | 'TosVsslNo' | 'VsslSpecInfo' | 'QualityCheck'>('AIS');
   const { user } = useAuth();
 
   // 페이지 변경 시 로그 기록
@@ -69,7 +70,7 @@ const Dashboard: React.FC = () => {
     logPageVisit(currentPage, userId);
   }, [currentPage, user]);
 
-  const handlePageChange = (page: 'AIS' | 'TOS' | 'TC' | 'QC' | 'PortMisVsslNo' | 'TosVsslNo' | 'VsslSpecInfo' | 'QualityCheck') => {
+  const handlePageChange = (page: 'AIS' | 'TOS' | 'TC' | 'QC' | 'YT' | 'PortMisVsslNo' | 'TosVsslNo' | 'VsslSpecInfo' | 'QualityCheck') => {
     setCurrentPage(page);
   };
 
@@ -93,6 +94,11 @@ const Dashboard: React.FC = () => {
         />
       ) : currentPage === 'QC' ? (
         <QCPage 
+          currentPage={currentPage}
+          onPageChange={handlePageChange}
+        />
+      ) : currentPage === 'YT' ? (
+        <YTPage 
           currentPage={currentPage}
           onPageChange={handlePageChange}
         />
